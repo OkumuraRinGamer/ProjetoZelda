@@ -1,0 +1,46 @@
+Comments,Type,ID,X,Y,SwitchID,Group
+Kokiri's Emerald,item,301,420,390,0,1
+Goron's Ruby,item,302,489,390,0,1
+Zora's Sapphire,item,303,557,390,0,1
+Light Medallion,item,305,486,140,0,1
+Forest Medallion,item,306,554,161,0,1
+Fire Medallion,item,307,576,226,0,1
+Earth Medallion,item,308,553,293,0,1
+Water Medallion,item,309,487,320,0,1
+Wind Medallion,item,310,424,293,0,1
+Spirit Medallion,item,311,400,226,0,1
+Shadow Medallion,item,312,424,161,0,1
+Song: Zelda's Lullaby,item,247,69,318,0,1
+Song: Epona's Song,item,253,97,318,0,1
+Song: Saria's Song,item,248,125,318,0,1
+Song: Sun's Song,item,249,153,318,0,1
+Song: Song of Time,item,250,181,318,0,1
+Song: Inverted Song of Time,item,251,209,318,0,1
+Song: Song of Double Time,item,252,237,318,0,1
+Song: Song of Storms,item,254,265,318,0,1
+Song: Song of Healing,item,255,293,318,0,1
+Song: Song of Soaring,item,256,321,318,0,1
+Song: Prelude of Light,item,259,56,345,0,1
+Song: Minuet of Forest,item,260,84,345,0,1
+Song: Bolero of Fire,item,261,112,345,0,1
+Song: Serenade of Water,item,262,140,345,0,1
+Song: Nocturne of Shadow,item,263,168,345,0,1
+Song: Requiem of Spirit,item,264,196,345,0,1
+Song: Sonata of Awakening,item,266,224,345,0,1
+Song: Goron Lullaby,item,267,252,345,0,1
+Song: New Wave Bossa Nova,item,268,280,345,0,1
+Song: Elegy of Emptiness,item,269,308,345,0,1
+Song: Oath to Order,item,270,336,345,0,1
+Season: Spring,item,293,70,182,0,1
+Season: Summer,item,294,117,228,0,1
+Season: Autumn,item,295,163,182,0,1
+Season: Winter,item,296,117,134,0,1
+Odolwa's Remains,item,314,70,130,0,1
+Goht's Remains,item,315,163,132,0,1
+Gyorg's Remains,item,316,70,230,0,1
+Twinmold's Remains,item,317,163,230,0,1
+Bomber's Notebook,item,329,260,197,0,1
+Stone of agony,item,331,260,249,0,1
+Gerudo Membership Card,item,332,312,249,0,1
+Knife Room Key,item,334,312,197,0,1
+Heart Fragment,item,$game_variables[88],286,130,0,1

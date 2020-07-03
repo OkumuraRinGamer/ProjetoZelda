@@ -1,0 +1,20 @@
+Comments,Type,ID,X,Y,SwitchID,Group
+Level 1 Sword,weapon,6,375,161,0,1
+Level 2 Sword,weapon,7,434,161,0,1
+Level 3 Sword,weapon,12,492,161,0,1
+Level 4 Sword,weapon,27,551,161,0,1
+Level 1 Shields,armor,6,402,236,0,2
+Level 2 Shields,armor,12,460,236,0,2
+Level 3 Shields,armor,17,520,236,0,2
+Kikori Tunic,armor,27,402,311,0,3
+Goron Tunic,armor,28,460,311,0,3
+Zora Tunic,armor,29,520,311,0,3
+Lifting,armor,(($game_party.armor_number(52) > 0) ? 52 : (($game_party.armor_number(48) > 0) ? 48 : 44)),373,386,0,0
+Flippers,armor,58,433,386,0,2
+Scale,armor,70,493,386,0,0
+Reflect,armor,80,552,386,0,0
+Arrow Quiver,armor,(($game_party.armor_number(87) > 0) ? 87 : (($game_party.armor_number(86) > 0) ? 86 : 85)),65,165,0,0
+Bomb Bag,armor,(($game_party.armor_number(92) > 0) ? 92 : (($game_party.armor_number(91) > 0) ? 91 : 90)),65,220,0,0
+Deku Nuts Satchel,armor,(($game_party.armor_number(112) > 0) ? 112 : (($game_party.armor_number(111) > 0) ? 111 : 110)),65,275,0,0
+Emblem Bag,armor,(($game_party.armor_number(97) > 0) ? 97 : (($game_party.armor_number(96) > 0) ? 96 : 95)),65,330,0,0
+Wallet,armor,(($game_party.armor_number(125) > 0) ? 125 : (($game_party.armor_number(124) > 0) ? 124 : (($game_party.armor_number(123) > 0) ? 123 : (($game_party.armor_number(122) > 0) ? 122 : 121)))),65,385,0,0

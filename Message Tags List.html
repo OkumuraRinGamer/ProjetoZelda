@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+
+<meta charset="UTF-8">
+<meta http-equiv="content-language" content="en">
+<title>Hermes - Hermes Extends RPGXP's MEssage System Version 0.4</title>
+
+<style>
+	html { background-color:white; color:black; font-size:14px; }
+	ol.toc { list-style-type: none; padding-left:10px; }
+	.top-link { font-size:80%; float:right }
+	table {
+		margin:auto;
+		border-radius:10px;
+		border-spacing:0px;
+		background-color:#CCC;
+		padding:5px
+	}
+	table caption { font-style: italic }
+	th {
+		border-right: solid 1px black;
+		border-bottom: solid 1px black;
+	}
+	td {
+		border-right: solid 1px #666;
+		border-bottom: solid 1px #666;
+		text-align: center;
+	}
+	th:last-child, td:last-child { border-right:none }
+	tr:last-child td { border-bottom:none }
+	table.wide td:last-child { text-align: left }
+	#settings td:nth-child(-n+2) { font-family:monospace }
+	*[title]:before { content:attr(title); }
+	div[id^="tag_"]:before { content:attr(title)" tag"; font-size:150%; line-height:0; opacity:0.5 }
+	div[id^="tag_"] { background-color:#DDD; margin-bottom:15px; border-radius: 10px }
+	div[id^="tag_"] .short { font-family:monospace }
+	div[id^="tag_"] .short:before,
+	div[id^="tag_"] .example:before { font-style:italic; font-family:default; }
+	div[id^="tag_"] .short:before { margin-left:20px; content:"Usage: "; }
+	div[id^="tag_"] .argument:before { content:"[ " }
+	div[id^="tag_"] .argument:after { content:" ]" }
+	div[id^="tag_"] .argument-ommitted:before, div[id^="tag_"] .no-argument:before,
+	div[id^="tag_"] .argument-required:before { font-style:italic; margin-left:15px; }
+	div[id^="tag_"] .argument-ommitted:before { content:"When argument is left out: " }
+	div[id^="tag_"] .no-argument:before { content:"No argument required" }
+	div[id^="tag_"] .argument-required:before { content:"Argument can't be left out" }
+	div[id^="tag_"] .description, 
+	div[id^="tag_"] .example { padding:10px; border-top:solid 1px #666 }
+	div[id^="tag_"] .description { background-color: #EEE}
+	div[id^="tag_"] .description p { margin-top: 0 }
+	div[id^="tag_"] .description p:last-child { margin-bottom:0 }
+	div[id^="tag_"] .example { font-family:monospace; padding:3px 10px; }
+	div[id^="tag_"] .example:before { content:"Usage example: "; }
+	.string { color:#D00 }
+	.integer { color:#080 }
+	.reserved { color:#005 }
+	table.faceset {
+		border-radius:0; background-color:transparent
+	}
+	table.faceset td {
+		border:dotted 1px black; width:128px; height:128px;
+		background-color:#CCC;
+	}
+	div.table-box { text-align:center }
+	div.table-box table { display:inline-table; margin:0 15px 15px 15px; }
+	#colortables td:last-child { width: 300px }
+	code {
+		background-color: #DDD;
+		background-color: rgba(0, 0, 0, .1);
+		border-radius:10px; padding:0 5px;
+	}
+</style>
+
+<script>
+	function createContentsTable(searchNode, outputNode, prefix, depth) {
+		var body = document.getElementsByTagName("body")[0];
+		if (searchNode == null) {
+			searchNode = document.getElementsByTagName("h2")[0];
+			outputNode = document.createElement("div");
+			prefix = "";
+			depth = 2;
+			var heading = document.createElement("h2");
+			heading.appendChild(document.createTextNode("Table of contents"));
+			body.insertBefore(heading, searchNode);
+			body.insertBefore(outputNode, searchNode);
+			searchNode = outputNode;
+		}
+		var anchor, title;
+		var sectionId = 0;
+		var list, listItem;
+		var newdepth;
+		var heading, last_heading;
+		var topLink, a;
+		var element_count = 0;
+		while (searchNode = searchNode.nextSibling) {
+			if (searchNode.nodeType != 1) continue;
+			if (anchor = searchNode.getAttribute("id")) {
+				sectionId++;
+				last_heading = heading;
+				if (heading = searchNode.nodeName.match(/H(\d)/)) {
+					title = searchNode.firstChild.data;
+					newdepth = Number(RegExp.$1);
+				} else {
+					title = searchNode.getAttribute("title");
+					if (!title) {
+						title = anchor.slice(0,1).toUpperCase() + anchor.slice(1);
+					}
+					newdepth = last_heading ? depth + 1 : depth;
+				}
+				if (newdepth < depth) return searchNode.previousSibling;
+				else if (newdepth > depth) {
+					sectionId--;
+					searchNode = createContentsTable(
+						searchNode.previousSibling, listItem,
+						prefix + sectionId + ".", newdepth
+					);
+				} else {
+					if (!list) {
+						list = document.createElement("ol");
+						list.className = "toc";
+						outputNode.appendChild(list);
+					}
+					listItem = document.createElement("li");
+					list.appendChild(listItem);
+					a = document.createElement("a");
+					listItem.appendChild(a);
+					a.href = "#" + anchor;
+					a.appendChild(document.createTextNode(prefix+sectionId+'. '+title));
+					if (heading) {
+						searchNode.firstChild.data = a.firstChild.data;
+					}
+					if (depth < 4) {
+						var topLink = document.createElement("div");
+						topLink.className = "top-link";
+						var a = document.createElement("a");
+						a.appendChild(document.createTextNode("back to top"));
+						topLink.appendChild(a);
+						a.href = "#";
+						body.insertBefore(topLink, searchNode);
+					}
+				}
+			}
+		}
+		return searchNode;
+	}
+</script>
+
+<body onload="createContentsTable()">
+
+<h1>Message Tags List</h1>
+
+<h2 id="intro">Introduction</h2>
+
+<p>
+	The Project Zelda Engine uses a message script called Hermes. Hermes greatly
+	expands and extends the functionality of the default RPG Maker XP's message
+	system, making it more customizable and configurable, with the use of Tags.
+</p>
+
+<p>
+	The Tags are message commands used in a message, which alters the way a
+	message is displayed to the player. The tags can change the speed and the
+	color of the text in a message, the formation, display portraits, icons, play
+	sounds in a message, display the player's Gold, names of the actors or
+	switches or variables, and more.
+</p>
+
+<h2 id="tags">Tags List</h2>
+
+<h3 id="tags_font">Font display options</h3>
+
+<div id="tag_font" title="\TypeFace"><span class="short">\ty</span>
+	<span class="argument"><span class="string">font name</span></span>
+	<span class="argument-ommitted">Reset to default font</span>
+	<div class="description">
+		Draws the following text using the specified font name.
+	</div>
+	<div class="example">\TypeFace[Times New Roman]</div>
+</div>
+<div id="tag_size" title="\height"><span class="short">\h</span>
+	<span class="argument"><span class="integer">number</span></span>
+	<span class="argument-ommitted">Reset to default font size</span>
+	<div class="description">
+		Draws the following text in the specified size (&asymp;height in pixel).
+	</div>
+	<div class="example">\Height</div>
+</div>
+<div id="tag_bold" title="\Bold"><span class="short">\b</span>
+	<span class="argument">
+		<span class="reserved">on</span> / <span class="reserved">off</span>
+	</span>
+	<span class="argument-ommitted">Toggle from on to off and vice versa</span>
+	<div class="description">Draws the following text in bold face.</div>
+	<div class="example">\Bold[on]</div>
+</div>
+<div id="tag_italic" title="\Italic"><span class="short">\i</span>
+	<span class="argument">
+		<span class="reserved">on</span> / <span class="reserved">off</span>
+	</span>
+	<span class="argument-ommitted">Toggle from on to off and vice versa</span>
+	<div class="description">Draws the following text in italic face.</div>
+	<div class="example">\Italic</div>
+</div>
+<div id="tag_color" title="\Color"><span class="short">\co</span>
+	<span class="argument">
+		<span class="integer">0..9</span> /
+		<span class="reserved">#</span> <span class="string">RRGGBB</span>
+		[ <span class="string">AA</span> ]
+	</span>
+	<span class="argument-ommitted">Reset to default font color</span>
+	<div class="description">
+		<p>
+			Draws the following text in the specified color, which is either a color
+			code from 0 to 7 (see table below) or a hexadecimal color code which may
+			include an alpha value. The latter should start with a # sign, like in
+			HTML/CSS.
+		</p>
+		<div class="table-box" id="colortables">
+			<table>
+				<caption>RGSS color codes</caption>
+				<tr><th>Color code</th><th>Color</th></tr>
+				<tr><td>0</td><td style="background-color:rgb(255,255,255)"></td></tr>
+				<tr><td>1</td><td style="background-color:rgb(128,128,255)"></td></tr>
+				<tr><td>2</td><td style="background-color:rgb(255,128,128)"></td></tr>
+				<tr><td>3</td><td style="background-color:rgb(128,255,128)"></td></tr>
+				<tr><td>4</td><td style="background-color:rgb(128,255,255)"></td></tr>
+				<tr><td>5</td><td style="background-color:rgb(255,128,255)"></td></tr>
+				<tr><td>6</td><td style="background-color:rgb(255,255,128)"></td></tr>
+				<tr><td>7</td><td style="background-color:rgb(192,192,192)"></td></tr>
+				<tr><td>8-9</td><td style="background-color:rgb(255,255,255)"></td></tr>
+			</table>
+			<table>
+				<caption>Hexadecimal color codes (examples)</caption>
+				<tr><th>Color code</th><th>Color</th></tr>
+				<tr><td>#FFFFFF</td><td style="background-color:#FFFFFF"></td></tr>
+				<tr><td>#8080FF</td><td style="background-color:#8080FF"></td></tr>
+				<tr><td>#FF8080</td><td style="background-color:#FF8080"></td></tr>
+				<tr><td>#80FF80</td><td style="background-color:#80FF80"></td></tr>
+				<tr><td>#80FF80FF</td><td style="background-color:#80FF80"></td></tr>
+				<tr>
+					<td>#80FF8080</td>
+					<td style="background-color:#C0E4C0;color:#707070">
+						(semi-transparent)
+					</td>
+				</tr>
+				<tr><td>#80FF8000</td><td>(invisible)</td></tr>
+				<tr><td>#FF8000</td><td style="background-color:#FF8000"></td></tr>
+				<tr><td>#0080FF</td><td style="background-color:#0080FF"></td></tr>
+				<tr><td>#fd6e57</td><td style="background-color:#fd6e57"></td></tr>
+				<tr><td>#79e7e6</td><td style="background-color:#79e7e6"></td></tr>
+				<tr><td>...</td><td>.....</td></tr>
+			</table>
+		</div>
+	</div>
+	<div class="example">\Color[#DEADBEEF]</div>
+</div>
+<div id="tag_opacity" title="\Opacity"><span class="short">\op</span>
+	<span class="argument"><span class="integer">0..255</span></span>
+	<span class="argument-ommitted">Reset to default opacity</span>
+	<div class="description">
+		As an alternative to setting a font color with an alpha channel, this tag
+		can be used to change only the opacity. 0 is fully transparent, 255 fully
+		opaque.
+	</div>
+	<div class="example">\Opacity[128]</div>
+</div>
+<div id="tag_shadow" title="\Shadow"><span class="short">\sh</span>
+	<span class="argument">
+		[ <span class="integer">number</span> ] [,] 
+		[ <span class="reserved">#</span> <span class="string">RRGGBB</span>
+		[ <span class="string">AA</span> ] ]
+	</span>
+	<span class="argument-ommitted">Reset to default shadow</span>
+	<div class="description">
+		Enables a shadow for the following text. The first argument is the offset
+		in pixels, the second a hex-code color as described in
+		<a href="#tag-color">\Color</a>. If either is left out, the corresponding
+		value will not be changed. If both are left out, the default is assumed.
+		If the first value is a 0, the shadow will be disabled.
+	</div>
+	<div class="example">\Shadow[#00D000]</div>
+</div>
+<div id="tag_outline" title="\Outline"><span class="short">\ou</span>
+	<span class="argument">
+		[ <span class="integer">number</span> ] [,] 
+		[ <span class="reserved">#</span> <span class="string">RRGGBB</span>
+		[ <span class="string">AA</span> ] ]
+	</span>
+	<span class="argument-ommitted">Reset to default outline</span>
+	<div class="description">
+		Enables an outline for the following text. The first argument is the width
+		in pixels, the second a hex-code color as described in
+		<a href="#tag-color">\Color</a>. If either is left out, the corresponding
+		value will not be changed. If both are left out, the default is assumed.
+		If the first value is a 0, the Outline will be disabled.
+	</div>
+	<div class="example">\Outline[3,]</div>
+</div>
+
+<h4 id="tags_namebox">Tags for name boxes</h4>
+
+<p>
+	For all of the above tags, there is an equivalent one for name boxes (see
+	<a href="#tag_namebox">\NameBox</a>), by prepending the respective tags with
+	an underscore character (_). For example, to change the text size in the name
+	box. You can write <code>\_size[26]</code>. However, this will only work when
+	a <a href="#tag_namebox">\NameBox</a> tag has been used before, in the same
+	message. If you try to set a font property prior to setting a name box text,
+	it simply won't work.
+</p>
+
+<h3 id="tags_flow">Message flow control</h3>
+
+<div id="tag_align" title="\Align"><span class="short">\al</span>
+	<span class="argument">(
+		<span class="reserved">l</span> /
+		<span class="reserved">c</span> /
+		<span class="reserved">r</span>
+		) , (
+		<span class="reserved">t</span> /
+		<span class="reserved">m</span> /
+		<span class="reserved">b</span>
+		)
+	</span>
+	<span class="argument-ommitted">Reset to default alignment</span>
+	<div class="description">
+		Sets the text alignment for the current message. If this tag is used
+		multiple times in a single message, only the last one will take effect.
+		The value before the comma is for horizontal alignment (left / center /
+		right), the one after for vertical alignment (top / middle / bottom). These
+		words can also be written out in the tag, e.g. \x[right,bottom] will work.
+	</div>
+	<div class="example">\Align[center,b]</div>
+</div>
+<div id="tag_speed" title="\Speed"><span class="short">\sp</span>
+	<span class="argument"><span class="integer">number</span></span>
+	<span class="argument-ommitted">Reset to default typing speed</span>
+	<div class="description">
+		Sets the typing speed for the following text. Larger numbers means slower
+		typing. A value of zero means that the following text will be displayed
+		immediately.
+	</div>
+	<div class="example">\Speed</div>
+</div>
+<div id="tag_preventskip" title="Prevent skipping"><span class="short">\%</span>
+	<span class="argument">
+		<span class="reserved">on</span> / <span class="reserved">off</span>
+	</span>
+	<span class="argument-ommitted">Toggle from on to off and vice versa</span>
+	<div class="description">
+		Normally, the player skip over text (i.e., the text will be displayed at
+		once instead of being typed) by pressing the SKIP_TEXT_CODE key specified in
+		the Hermes settings. This tag can be used to disallow skipping of certain
+		parts of a message. These parts cannot be displayed immediately, and if the
+		player starts a text skip before this part, it will stop skipping as soon as
+		the tag is reached.
+	</div>
+	<div class="example">\%</div>
+</div>
+<div id="tag_wait1" title="Wait (short)"><span class="short">\.</span>
+	<span class="no-argument"></span>
+	<div class="description">
+		Pauses typing for five frames, or a quarter second. Can be skipped.
+	</div>
+	<div class="example">\..\..\..\. What?</div>
+</div>
+<div id="tag_wait4" title="Wait (long)"><span class="short">\|</span>
+	<span class="no-argument"></span>
+	<div class="description">
+		Pauses typing for twenty frames, or a whole second. Can be skipped.
+	</div>
+	<div class="example">Oh.\| My.\| GOD!</div>
+</div>
+<div id="tag_pause" title="Pause message"><span class="short">\!</span>
+	<span class="no-argument"></span>
+	<div class="description">
+		Requires the player to press a choice key to continue. It will show the same
+		little arrow in the bottom of the message window as if the message was over.
+		This cannot be skipped by the player.
+	</div>
+	<div class="example">Press any key to continue.\!</div>
+</div>
+<div id="tag_close" title="Close message"><span class="short">\^</span>
+	<span class="no-argument"></span>
+	<div class="description">
+		Closes the message window immediately. This can be used in combination with the
+		<a href="#tag_preventskip">\%</a> and <a href="#tag_wait1">wait</a>
+		<a href="#wait4">tags</a> to create automated text in cutscenes.
+	</div>
+	<div class="example">Hello?\|\| Is anyone there?\|\| Good night.\.\.\^</div>
+</div>
+
+<h3 id="tags_text">Variable text display</h3>
+
+<div id="tag_memberid" title="Member ID"><span class="short">\#</span>
+	<span class="argument"><span class="integer">0..3</span></span>
+	<span class="argument-ommitted">Retrieve the party leader's actor ID</span>
+	<div class="description">
+		Retrieves the actor ID of the party member with the given position. This
+		can be useful in combination with other tags, e.g. 
+		<a href="#tag_actor">\a</a> or <a href="#tag_class">\j</a> (see below).
+		Caution: the party leader has the position 0, not 1!
+	</div>
+	<div class="example">\NameBox[\MemberID[3]]</div>
+</div>
+<div id="tag_actor" title="\Actor"><span class="short">\ac</span>
+	<span class="argument"><span class="integer">actor id</span></span>
+	<span class="argument-ommitted">Display the party leader's name</span>
+	<div class="description">
+		Displays the name of the actor with the given actor ID.
+	</div>
+	<div class="example">\Actor</div>
+</div>
+<div id="tag_class" title="\Class"><span class="short">\cl</span>
+	<span class="argument"><span class="integer">actor id</span></span>
+	<span class="argument-ommitted">Display the party leader's class name</span>
+	<div class="description">
+		Displays the name of the class the actor with the given actor ID belongs to.
+	</div>
+	<div class="example">\Class[\Variable[5]]</div>
+</div>
+<div id="tag_map" title="\Map"><span class="short">\m</span>
+	<span class="argument"><span class="integer">map id</span></span>
+	<span class="argument-ommitted">Display current map's name</span>
+	<div class="description">
+		Displays the name of the map with the given map ID.
+	</div>
+	<div class="example">\Map[2]</div>
+</div>
+<div id="tag_variable" title="\Variable"><span class="short">\v</span>
+	<span class="argument">[
+		<span class="reserved">e</span> / <span class="reserved">i</span> /
+		<span class="reserved">w</span> / <span class="reserved">a</span> /
+		<span class="reserved">s</span> ] [ <span class="reserved">,</span> ]
+		<span class="integer">number</span>
+	</span>
+	<span class="argument-required"></span>
+	<div class="description">
+		<p>Displays one of the following things:</p>
+		<table>
+			<caption>Possible \Variable tag arguments</caption>
+			<tr><th>First argument</th><th>Second argument</th><th>Result</th></tr>
+			<tr>
+				<td><span class="reserved">e</span></td>
+				<td><span class="integer">enemy id</span></td>
+				<td>Name of the enemy with the given ID</td>
+			</tr>
+			<tr>
+				<td><span class="reserved">i</span></td>
+				<td><span class="integer">item id</span></td>
+				<td>Icon and name of item with the given ID</td>
+			</tr>
+			<tr>
+				<td><span class="reserved">w</span></td>
+				<td><span class="integer">weapon id</span></td>
+				<td>Icon and name of weapon with the given ID</td>
+			</tr>
+			<tr>
+				<td><span class="reserved">a</span></td>
+				<td><span class="integer">armor id</span></td>
+				<td>Icon and name of armor with the given ID</td>
+			</tr>
+			<tr>
+				<td><span class="reserved">s</span></td>
+				<td><span class="integer">skill id</span></td>
+				<td>Icon and name of skill with the given ID</td>
+			</tr>
+			<tr>
+				<td>(none)</td>
+				<td><span class="integer">variable id</span></td>
+				<td>Value of game variable with the given ID</td>
+			</tr>
+		</table>
+	</div>
+	<div class="example">\Variable[i\Variable[\Variable[8]]]</div>
+</div>
+<div id="tag_event" title="\Event"><span class="short">\e</span>
+	<span class="argument"><span class="integer">event id</span></span>
+	<span class="argument-ommitted">
+		Display the name of the event currently being executed
+	</span>
+	<div class="description">
+		Displays the name of the event with the given event ID. At the moment,
+		this only works for the events on the current map.
+	</div>
+	<div class="example">\NameBox[\Event]</div>
+</div>
+<div id="tag_price" title="\Price"><span class="short">\pr</span>
+	<span class="argument"><span class="integer">item id</span></span>
+	<span class="argument-required"></span>
+	<div class="description">
+		Displays the price of the item with the given item ID.
+	</div>
+	<div class="example">\Variable[i13] (\Price[13] Gold)</div>
+</div>
+<div id="tag_linebreak" title="\/"><span class="short">\/</span>
+	<span class="no-argument"></span>
+	<div class="description">
+		Inserts a line break. This tag is only available if Hermes::WORD_WRAP has
+		been set to :manual.
+	</div>
+	<div class="example">Line1\/Line2</div>
+</div>
+<div id="tag_icon" title="\Symbol"><span class="short">\sy</span>
+	<span class="argument"><span class="string">icon name</span></span>
+	<span class="argument-required"></span>
+	<div class="description">
+		Draws the icon with the given file name into the message window at the current
+		position. The argument must point to a valid file in the Graphics/Icons
+		folder of your project. This tag is also used by the
+		<a href="#tag_variable">\v</a> tag to draw icons.
+	</div>
+	<div class="example">\Symbol[sword_gold]</div>
+</div>
+
+<h3 id="tags_objects">Additional objects</h3>
+
+<div id="tag_face" title="\Face"><span class="short">\f</span>
+	<span class="argument">[
+		<span class="integer">actor id</span> /
+		<span class="string">file name</span> ] [
+		<span class="reserved">,</span> (
+		<span class="integer">face id</span> / 
+		<span class="string">face alias</span>) ] [ , {
+		<span class="reserved">a</span> / <span class="integer">1..9</span> /
+		<span class="reserved">c</span> / <span class="reserved">s</span> / 
+		<span class="reserved">p</span> / <span class="reserved">d</span> /
+		<span class="reserved">l</span> / <span class="reserved">r</span> /
+		<span class="reserved">n</span> / <span class="reserved">m</span> } ]
+	</span>
+	<span class="argument-ommitted">
+		Show the face graphic for the party leader as single image
+	</span>
+	<div class="description">
+		<p>
+			Shows a single face graphic or a face graphic out of a faceset image.
+			These images need to be present in the Graphics/Pictures folder of your
+			project. If an actor ID is specified, it will look for the file
+			Graphics/Pictures/face_<span class="integer">actor id</span>, if a file
+			name is specified, it will naturally look for
+			Graphics/Pictures/<span class="string">file name</span>.
+		</p>
+		<p>
+			If a face alias was specified, it will translate it into a face ID via the
+			rules specified in config/face.rb. By default, these are:
+		</p>
+		<table>
+			<caption>Default face aliases</caption>
+			<tr><th>Alias</th><th>Face ID</th></tr>
+			<tr><td>normal</td><td>1</td></tr><tr><td>happy</td><td>2</td></tr>
+			<tr><td>sad</td><td>3</td></tr><tr><td>angry</td><td>4</td></tr>
+		</table>
+		<p>
+			<br>
+			If a face id was specified directly or resolved this way, the picture
+			file will be considered a faceset, consisting of an arbitrary number of
+			rows with 4 faces each. The row height is assumed as
+			Hermes::Face::HEIGHT, the face width is assumed as image width divided by
+			four, and the face id is counted left-to-right, top-to-bottom. Example:
+		</p>
+		<table class="faceset">
+			<tr>
+				<td>1<br>normal</td><td>2<br>happy</td>
+				<td>3<br>sad</td><td>4<br>angry</td>
+			</tr>
+			<tr><td>5</td><td>6</td><td>8</td><td>8</td></tr>
+			<tr><td>9</td><td>10</td><td>11</td><td>12</td></tr>
+		</table>
+		<p>
+			<br>
+			The third part is a string of flags, which will be loaded one after
+			another. If one property is set more than once, only the last version
+			will be used. Here is what the flags stand for:
+		</p>
+		<table class="wide">
+			<caption>\Face tag flags</caption>
+			<tr><th>Flag</th><th>Meaning</th><th>Explanation</th></tr>
+			<tr>
+				<td><span class="reserved">a</span></td><td>Animate the face</td>
+				<td>
+					The face will be animated by using the a single column of the
+					graphic as the set of frames. In the above example, 2, 6, and 10
+					would form the animation frames if we called \f[bla,happy,a].
+				</td>
+			</tr>
+			<tr>
+				<td><span class="integer">1..9</span></td>
+				<td>Animation speed</td>
+				<td>
+					Ineffective if a is not set. If it is, the animation speed will be
+					set to the given value (1=fast, 9=slow).
+				</td>
+			</tr>
+			<tr>
+				<td><span class="reserved">c</span></td>
+				<td>Animation type "cycle"</td>
+				<td>
+					Ineffective if a is not set. If it is, the animation will be a
+					repeat-from-start type, e.g. the frame sequence would be 2, 6, 10,
+					2, 6, 10, 2,... if we take the same example as above.
+				</td>
+			</tr>
+			<tr>
+				<td><span class="reserved">s</span></td>
+				<td>Animation type "seesaw"</td>
+				<td>
+					Ineffective if a is not set. If it is, the animation will be a
+					inverse-direction type, e.g. the frame sequence would be 2, 6, 10,
+					6, 2, 6, 10, 6,... if we take the same example again.
+				</td>
+			</tr>
+			<tr>
+				<td><span class="reserved">p</span></td>
+				<td>Pause animation along with message</td>
+				<td>
+					Ineffective if a is not set. If it is, the animation will be paused
+					when the message is paused, i.e., when it shows the small blinking
+					arrow and waits for the user to hit a choice key.
+				</td>
+			</tr>
+			<tr>
+				<td><span class="reserved">d</span></td>
+				<td>Don't pause along with message</td>
+				<td>
+					Ineffective if a is not set. If it is, the animation will not be
+					paused with the message.
+				</td>
+			</tr>
+			<tr>
+				<td><span class="reserved">l</span></td>
+				<td>Face position: left</td>
+				<td>
+					Face graphic will be shown in the left of the message window.
+				</td>
+			</tr>
+			<tr>
+				<td><span class="reserved">r</span></td>
+				<td>Face position: right</td>
+				<td>
+					Face graphic will be shown in the right of the message window.
+				</td>
+			</tr>
+			<tr>
+				<td><span class="reserved">n</span></td>
+				<td>Face orientation: normal</td>
+				<td>
+					Face graphic will be shown in the same orientation it has in the
+					original graphic.
+				</td>
+			</tr>
+			<tr>
+				<td><span class="reserved">m</span></td>
+				<td>Face orientation: mirrored</td>
+				<td>
+					Face graphic will be flipped horizontally.
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="example">\Face[,sad,a]</div>
+</div>
+<div id="tag_name" title="\NameBox"><span class="short">\n</span>
+	<span class="argument">
+		<span class="integer">actor id</span> /
+		<span class="string">value</span>
+	</span>
+	<span class="argument-ommitted">
+		Show name of party leader in the name box
+	</span>
+	<div class="description">
+		Shows a smaller box next to message window that contain any given value.
+		Usually, this is used for the name of the current speaker. Therefore, an
+		actor ID can be passed instead of a value, in which case the name if the
+		actor belonging to this ID will be drawn in the box.
+	</div>
+	<div class="example">\NameBox[Mysterious Chicken]</div>
+</div>
+<div id="tag_chara" title="\Display"><span class="short">\d</span>
+	<span class="argument"><a href="#tag_face">see here</a></span>
+	<span class="argument-ommitted">Show face and name of party leader</span>
+	<div class="description">
+		Combines the <a href="#tag_face">\f</a> and <a href="#tag_name">\n</a>
+		commands into a single command.
+	</div>
+	<div class="example">\Chara[\MemberID[2]]</div>
+</div>
+<div id="tag_gold" title="\Gold"><span class="short">\g</span>
+	<span class="no-argument"></span>
+	<div class="description">
+		Shows or hides a notification box containing the party's current possession
+		of game gold.
+	</div>
+	<div class="example">
+		You have this much: \Gold\|\|\|Okay, that's enough.\Gold
+	</div>
+</div>
+<div id="tag_sound" title="\Sound"><span class="short">\so</span>
+	<span class="argument"><span class="string">file name</span></span>
+	<span class="argument-ommitted">Turn typing sound off</span>
+	<div class="description">
+		Sets a typing sound to be played on each individual letter drawn.
+		To turn the sound off for the current message, use \Sound without an
+		argument.
+	</div>
+	<div class="example">\Sound[click_\Variable[23]]</div>
+</div>
+
+<h3 id="tags_pseudo">Pseudo tags</h3>
+
+<p>
+	The tags in this section are different from all the others in that they aren't
+	defined and parsed as usual. They are "magic" in a way, being executed outside
+	of the normal procedure.
+</p>
+
+<div id="tag_merge" title="Merge"><span class="short">\*</span>
+	<span class="no-argument"></span>
+	<div class="description">
+		Merges a Show Text command with the next one. This way, you can accumulate
+		multiple Show Text event commands into a single message window. If the
+		collected text exceeds $msg.max_lines, it will "scroll" inside the message
+		box, pausing every $msg.max_lines lines. Once you reach a Show Choice or
+		Input Number command, further accumulation is impossible and the message
+		will be shown (the tag is ignored in Choices).
+	</div>
+	<div class="example">\*</div>
+</div>
+<div id="tag_popup" title="\Popup"><span class="short">\p</span>
+	<span class="argument">[
+		<span class="reserved">screen</span> / <span class="reserved">-1</span> /
+		<span class="reserved">hero</span> / <span class="integer">0</span> /
+		<span class="integer">event id</span> / <span class="reserved">this</span> ]
+		[ , <span class="reserved">async</span> ]
+	</span>
+	<span class="argument-ommitted">
+		Pop-up message over event currently being executed
+	</span>
+	<div class="description">
+		<p>
+			If this tag is specified, the containing message will be opened as a
+			speech-bubble-esque pop-up over a defined character, or in full screen
+			mode with transparent background. The first argument is used as follows:
+		</p>
+		<table>
+			<caption>\Popup tag arguments</caption>
+			<tr><th>Value</th><th>Meaning</th></tr>
+			<tr>
+				<td>
+					<span class="reserved">screen</span>, <span class="reserved">-1</span>
+				</td>
+				<td>Full screen message with transparent background</td>
+			</tr>
+			<tr>
+			  <td>
+					<span class="reserved">hero</span>, <span class="integer">0</span>
+				</td>
+				<td>Pop-up over the player</td>
+			</tr>
+			<tr>
+				<td><span class="integer">event id</span></td>
+				<td>Pop-up over the event with the specified ID</td>
+			</tr>
+			<tr>
+			  <td><span class="reserved">this</span>, (none)</td>
+				<td>Pop-up over the event currently being executed</td>
+			</tr>
+		</table>
+		<p>
+			<br>
+			The full screen text box will display as many lines as fit the screen and
+			can be used for various overlay text, e.g. game credits. The pop-up
+			version will be automatically resized to the size of the text it contains
+			and will be fixed to the event it is attached to. If the event moves,
+			the box follows. When the second argument is not set, the box will try
+			everything to stay on screen, while still staying as close to its host as
+			possible.
+		</p>
+		<p>
+			But the second parameter (<span class="reserved">async</span>) is where it
+			gets <i>really</i> interesting. If it is set, the message window will not be
+			controlled by the player. Instead, it will stay by its event until you
+			close it manually. This can either be done with a
+			<a href="#tag_close">\Close</a> command inside this message or by opening
+			a new message attached to the same event. If you want to close it with the
+			latter method without opening a new window, simply set an empty message to
+			pop up over the event. Empty messages will not be shown, however the old
+			box will still be closed.
+		</p>
+		<p>
+			Asynchronous messages (i.e., such with the
+			<span class="reserved">async</span> flag set) can use all the things
+			normal messages can, except for choices and input numbers. They will move
+			with their events, even outside of the visible area. There's a virtually
+			unlimited number of asynchronous messages possible, but only one per
+			event at a time.
+		</p>
+		<p>
+			An interesting edge-case is when a synchronous pop-up message is showing,
+			and then, invoked by e.g. a parallel process event, an asynchronous
+			message is shown. The synchronous will then be killed without player
+			interaction. You can see this demonstrated in the Hermes Demo, along with
+			related behaviors when using asynchronous messages.
+		</p>
+		<p>
+			In battle, pop-up messages can also be used. If the supplied argument is
+			a number less than 4, it will pop up over the party member with the
+			fitting ID. If it is greater than three, it will pop up over the enemies
+			(i.e., if 4, it will appear over the first monster, if 5, over the second
+			etc.). However, battle might be bugged. I haven't properly tested this, in
+			particular not with asynchronous messages.
+		</p>
+	</div>
+	<div class="example">\Popup[screen,async]</div>
+</div>
+
+</body>

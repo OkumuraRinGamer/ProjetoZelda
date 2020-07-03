@@ -1,0 +1,41 @@
+Comments,Type,ID,X,Y,SwitchID,Group
+Sling Shot/Hyper SlingShot,item,($game_party.item_number(5) > 0) ? 5 : 4,106,153,,1
+Deku Nut,item,112,167,153,,1
+Bow & Arrow,item,($game_party.item_number(148) > 0 and $game_party.item_number(8) > 0) ? 8 : 7,228,153,,1
+Remote Bomb,item,26,350,153,,1
+Magic Powder/Mushroom,item,($game_party.item_number(50) > 0) ? 50 : 49,411,153,,1
+Magical/Boomerang,item,($game_party.item_number(19) > 0) ? 19 : 18,106,208,,1
+Bomb,item,24,167,208,,1
+Hookshot/Longshot,item,($game_party.item_number(22) > 0) ? 22 : 21,228,208,,1
+Fire Arrow,item,14,294,152,,1
+Ice Arrow,item,15,294,208,,1
+Bomb Arrow,item,13,294,262,,1
+Rock Feather,item,67,350,208,,1
+Magic Hammer,item,44,411,208,,1
+Harp of Ages,item,97,472,153,,1
+LA Ocarina,item,32,472,208,,1
+Nayru's love,item,133,472,263,,1
+Pegasus,item,52,533,153,,1
+Quake Medaillon,item,128,533,208,,1
+Bombos Medaillon,item,30,533,263,,1
+Lantern,item,108,106,263,,1
+Fairy Ocarina/Ocarina of Time,item,($game_party.item_number(37) > 0) ? 37 : 36,167,263,,1
+Megaton Hammer,item,45,228,263,,1
+Shovel,item,62,350,263,,1
+Fire Rod,item,70,411,263,,1
+Book of Mudora,item,58,106,318,,1
+Magic Bean,item,91,167,318,,1
+Bomchu,item,25,228,318,,1
+Bug Catching Net,item,60,289,318,,1
+Cane of Pacci,item,75,350,318,,1
+Seed Shooter,item,84,411,318,,1
+Rod of Seasons,item,102,472,318,,1
+Magic Mirror,item,104,533,318,,1
+Cucco,item,406,472,392,,1
+Lon Lon Milk,item,404,533,392,,1
+Bottle 1,item,$game_variables[80],106,392,7,1
+Bottle 2,item,$game_variables[81],167,392,8,1
+Bottle 3,item,$game_variables[82],228,392,9,1
+Bottle 4,item,$game_variables[83],289,392,10,1
+Bottle 5,item,$game_variables[84],350,392,11,1
+Bottle 6,item,$game_variables[85],411,392,12,1

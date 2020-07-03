@@ -1,0 +1,16 @@
+#=================================================================================
+# ** Menu System
+#-------------------------------------------------------------------------------
+# Description:
+#	The description box has been adjusted to better cope with the text input,
+#	allowing dynamic resizing of the text and font size quickly using custom
+#	made algorithms.
+#-------------------------------------------------------------------------------
+# Inventory:
+#	The inventory layout has been readjusted, the only changes here were in the
+#	.csv file, and allows for upgrading items in a more obvious manner, before
+#	the layout had the first item recorded in the .csv file is the upgrade, but
+#	now the .csv file explicitly shows the newest (although the old method
+#	still works)
+#=================================================================================
+

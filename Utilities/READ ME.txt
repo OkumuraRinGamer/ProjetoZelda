@@ -1,0 +1,121 @@
+#===============================================================================
+# Maximusmaxy's Utilites
+#===============================================================================
+
+
+Welcome to my utilities pack. This pack includes a bunch of utilities which 
+make debugging and creating your game allot easier, here is a list of the
+current utilities in the pack.
+
+- Missing Filename Finder: Finds references to missing filenames
+- Filename Database Swap: Swap filenames and ID's without breaking your game
+- Tileset Editor: Replaces the default tileset editor without the limits
+
+If you find any bugs or the utilities simply just don't work, contact me
+at http://zeldaengine.net/user-3.html
+
+
+#===============================================================================
+# Installation
+#===============================================================================
+
+
+Make sure the the Utilities Folder is pasted in the game.exe folder otherwise
+they will not work.
+
+Before you can use the utilities you must first install Shoes V3 (Policeman).
+If an installer of Shoes hasn't been included in this package you can download
+it at the following website, download the no video version.
+
+http://shoesrb.com/
+
+Direct Download Link:
+
+http://github.com/downloads/shoes/shoes/shoes3-novideo.exe.zip
+
+Once you have shoes downloaded you can open the .rb files using shoes. If you
+want to change the association to makes things easier shoes can be found 
+installed in the default path:
+
+C:/Program Files/Common Files/Shoes/0.r1514/Shoes.exe
+
+Now you can open your .rb files with ease.
+
+
+#===============================================================================
+# Missing Filename Finder
+#===============================================================================
+
+
+Introduction:
+
+This is a quick simple utility which finds references to missing filenames.
+It searches through your database and maps and creates a text document with a
+log of each missing file for you to search through at your own leisure.
+
+
+#===============================================================================
+# Filename Database Swap
+#===============================================================================
+
+
+NOTE: MAKE SURE THE RMXP EDITOR IS CLOSED WHEN USING THIS UTILITY
+
+Introduction:
+
+This utility allows you to change your filenames or swap database ID's around
+whilst also changing all game data to reflect the changes. It allows you to
+reorganize your game without breaking it and causing missing filename errors.
+
+Change Filenames, Swap Data:
+
+This option allows you to actually change filenames automatically and swap
+existing data with old data. If this option is disabled filenames won't be
+changed and data will only be transfered in one direction, all existing data
+will be overwritten with the new data.
+
+Overwrite Filenames:
+
+If this option is enabled, existing filenames will be overwritten with the
+new filename if one exists. If not, the filename will be swapped with the
+previous filename.
+
+#===============================================================================
+# Tileset Editor
+#===============================================================================
+
+
+NOTE: MAKE SURE THE RMXP EDITOR IS CLOSED WHEN USING THIS UTILITY
+
+Introduction:
+
+This utility replaces the default RMXP tileset editor to a similar one without
+any of the limits. It adds the following features:
+
+- unlimited tilesets
+- unlimited terrain tags
+- reset passages
+- reset priorities
+- reset counters
+- reset bushs
+- reset terrain tags
+
+#===============================================================================
+# Special Thanks
+#===============================================================================
+
+
+Maximusmaxy: For making the utillities
+- http://zeldaengine.net/user-3.html
+
+Enterbrain: RPG Maker XP and stuff
+- http://www.rpgmakerweb.com/
+
+Shoes: Providing a GUI for the utillities
+- http://shoesrb.com/
+
+PZE Team: Requesting most of the utillities
+- http://www.zeldaengine.net/thread-136-post-1483.html#pid1483
+
+The People who created the Table/Color/Tone Classes
+- http://www.hbgames.org/forums/viewtopic.php?style=26&f=11&t=49838
